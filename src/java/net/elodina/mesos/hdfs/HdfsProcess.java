@@ -126,9 +126,9 @@ public class HdfsProcess {
     private static String escapeXmlText(String s) { return s.replace("<", "&lt;").replace(">", "&gt;"); }
 
     private File getNameNodeDir() {
-        String dir = node.hdfsSiteOpts.get("dfs.name.dir");                    // 1.x override
-        if (dir == null) dir = node.hdfsSiteOpts.get("dfs.namenode.name.dir"); // 2.x override
-        if (dir == null) dir = new File(getTmpDir(), "dfs/name").getPath();    // default
+        String dir = node.hdfsSiteOpts.get("dfs.name.dir") != null ? node.hdfsSiteOpts.get("dfs.name.dir").split(",")[0] : null ;                      // 1.x override
+        if (dir == null && node.hdfsSiteOpts.get("dfs.namenode.name.dir") != null) dir = node.hdfsSiteOpts.get("dfs.namenode.name.dir").split(",")[0]; // 2.x override
+        if (dir == null) dir = new File(getTmpDir(), "dfs/name").getPath();                                                                            // default
         return new File(dir);
     }
 
