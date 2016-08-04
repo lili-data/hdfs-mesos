@@ -203,6 +203,15 @@ public class HttpServer {
             if (failoverMaxTries != null && !failoverMaxTries.equals("") && !Strings.isInteger(failoverMaxTries))
                 throw new HttpError(400, "invalid failoverMaxTries");
 
+            String stickinessHostname = null;
+            if (request.getParameter("stickinessHostname") != null)
+                try { stickinessHostname = new String(request.getParameter("stickinessHostname")); }
+                catch (IllegalArgumentException e) { throw new HttpError(400, "invalid stickinessHostname"); }
+
+            Boolean stickinessPersist = null;
+            if (request.getParameter("stickinessPersist") != null)
+                try { stickinessPersist =  Boolean.valueOf(request.getParameter("stickinessPersist")); }
+                catch (IllegalArgumentException e) { throw new HttpError(400, "invalid stickinessPersist"); }
 
             List<Node> nodes = new ArrayList<>();
             for (String id : ids) {
@@ -229,6 +238,8 @@ public class HttpServer {
                 if (failoverDelay != null) node.failover.delay = failoverDelay;
                 if (failoverMaxDelay != null) node.failover.maxDelay = failoverMaxDelay;
                 if (failoverMaxTries != null) node.failover.maxTries = !failoverMaxTries.equals("") ? Integer.valueOf(failoverMaxTries) : null;
+                if (stickinessHostname != null) node.stickiness.hostname = stickinessHostname.equals("") ? null : stickinessHostname;
+                if (stickinessPersist != null) node.stickiness.persist = stickinessPersist;
             }
             Nodes.save();
 

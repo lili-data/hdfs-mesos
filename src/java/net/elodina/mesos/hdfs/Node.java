@@ -468,11 +468,12 @@ public class Node {
         public Period period = new Period("30m");
         public volatile String hostname;
         public volatile Date stopTime;
+        public volatile Boolean persist = false;
 
         public Stickiness() {}
         public Stickiness(JSONObject json) { fromJson(json); }
 
-        public Date expires() { return stopTime != null ? new Date(stopTime.getTime() + period.ms()) : null; }
+        public Date expires() { return stopTime != null && persist == false ? new Date(stopTime.getTime() + period.ms()) : null; }
 
         public void registerStart(String hostname) {
             this.hostname = hostname;
@@ -489,7 +490,7 @@ public class Node {
         @SuppressWarnings("SimplifiableIfStatement")
         public boolean allowsHostname(String hostname, Date now) {
             if (this.hostname == null) return true;
-            if (stopTime == null || now.getTime() - stopTime.getTime() >= period.ms()) return true;
+            if (stopTime == null || (now.getTime() - stopTime.getTime() >= period.ms()  && persist==false) ) return true;
             return this.hostname.equals(hostname);
         }
 
@@ -500,6 +501,7 @@ public class Node {
             catch (ParseException e) { throw new IllegalStateException(e); }
 
             if (json.containsKey("hostname")) hostname = (String) json.get("hostname");
+            if (json.containsKey("persist")) persist = (boolean) json.get("persist");
         }
 
         @SuppressWarnings("unchecked")
@@ -509,7 +511,7 @@ public class Node {
             json.put("period", "" + period);
             if (stopTime != null) json.put("stopTime", dateTimeFormat().format(stopTime));
             if (hostname != null) json.put("hostname", hostname);
-
+            if (persist != null) json.put("persist", persist);
             return json;
         }
     }
