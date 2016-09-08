@@ -153,8 +153,7 @@ public class HttpServer {
                 try { type = Node.Type.valueOf(request.getParameter("type").toUpperCase()); }
                 catch (IllegalArgumentException e) { throw new HttpError(400, "invalid type"); }
 
-                if (type == Node.Type.NAMENODE && !Nodes.getNodes(Node.Type.NAMENODE).isEmpty())
-                    throw new HttpError(400, "duplicate namenode");
+
             }
 
             Double cpus = null;
