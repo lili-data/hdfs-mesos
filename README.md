@@ -42,6 +42,17 @@ Now Mesos in vagrant should be running. You can proceed with starting scheduler.
 
 For more details about vagrant environment please read [vagrant/README.md](vagrant/README.md)
 
+Docker
+-----------------
+
+
+**Build**
+```docker build -t lilidata/hdfs-scheduler . ```
+
+
+**Run**
+```docker run -d --net=host lilidata/hdfs-scheduler ./hdfs-mesos.sh scheduler --master=zk://{exhibitor nodes}/{zk path} --storage=zk:{exhibitor nodes}/hdfs-scheduler --api=http://{HOSTNAME}:7000 ```
+
 
 Running Scheduler
 -----------------
